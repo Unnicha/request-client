@@ -58,7 +58,7 @@
 			$callback	= [
 				'draw'				=> $_REQUEST['draw'], // Ini dari datatablenya
 				'recordsTotal'		=> $countData,
-				'recordsFiltered'	=>$countData,
+				'recordsFiltered'	=> $countData,
 				'data'				=> $data,
 			];
 			echo json_encode($callback);

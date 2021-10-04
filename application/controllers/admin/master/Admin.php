@@ -1,5 +1,5 @@
 <?php
-
+	
 	class Admin extends CI_Controller {
 		
 		public function __construct() {
@@ -13,12 +13,13 @@
 			$this->libtemplate->main('admin/admin/tampil', $data);
 		}
 		
+		// menampilkan dataTables
 		public function page() {
-			$cari		= $_POST['search']['value'];
+			$offset		= $_POST['start'];
 			$limit		= $_POST['length'];
-			$offset 	= $_POST['start'];
-			$countData	= $this->Admin_model->countAdmin($cari); 
+			$cari		= $_POST['search']['value'];
 			$admin		= $this->Admin_model->getAllAdmin($offset, $limit, $cari);
+			$countData	= $this->Admin_model->countAdmin($cari);
 			
 			$data = [];
 			foreach($admin as $k) {
@@ -53,35 +54,60 @@
 			$data['judul']	= 'Tambah Admin';
 			$data['level']	= 'admin';
 			
-			$this->form_validation->set_rules('username', 'Username', 'required|is_unique[user.username]|min_length[5]|max_length[12]');
+			$this->session->unset_userdata([
+				'emailValid', 'emailMsg',
+				'usernameValid', 'usernameMsg',
+			]);
+			
+			$this->form_validation->set_rules('username', 'Username', 'required|min_length[8]|max_length[20]');
 			$this->form_validation->set_rules('nama', 'Nama', 'required');
-			$this->form_validation->set_rules('email', 'Email', 'required|valid_email|is_unique[user.email_user]');
+			$this->form_validation->set_rules('email', 'Email', 'required|valid_email');
 			$this->form_validation->set_rules('password', 'Password', 'required|min_length[8]');
 			$this->form_validation->set_rules('passconf', 'Password', 'required|matches[password]');
-
+			
 			if($this->form_validation->run() == FALSE) {
 				$this->libtemplate->main('admin/admin/tambah', $data);
 			} else {
-				$this->Admin_model->tambahAdmin();
-				$this->session->set_flashdata('notification', 'Data berhasil ditambahkan!');
-				redirect('admin/master/admin');
+				$validation = true;
+				if( $this->cekUnique('email', $_POST['email']) == false ) {
+					$validation = false;
+					$this->session->set_flashdata('emailValid', 'invalid');
+					$this->session->set_flashdata('emailMsg', 'Email sudah digunakan!');
+				}
+				if( $this->cekUnique('username', $_POST['username']) == false ) {
+					$validation = false;
+					$this->session->set_flashdata('usernameValid', 'invalid');
+					$this->session->set_flashdata('usernameMsg', 'Username sudah digunakan!');
+				}
+				
+				if($validation == true) {
+					if( $this->Admin_model->tambahAdmin() == true ) {
+						$this->session->set_flashdata('notification', 'Berhasil ditambahkan!');
+					} else {
+						$this->session->set_flashdata('warning', 'Gagal ditambahkan!');
+					}
+					redirect('admin/master/admin');
+				} else {
+					$this->libtemplate->main('admin/admin/tambah', $data);
+				}
 			}
 		}
 		
-		public function view($id_user) {
-			$user		= $this->Admin_model->getById($id_user);
-			$passcode	= '';
-			for($i=0; $i<$user['passlength']; $i++) {
-				$passcode .= '&bull;';
+		// untuk validasi data baru
+		public function cekUnique($type, $key) {
+			if( $type == 'username' )
+			$result	= $this->Admin_model->getByUsername($key);
+			elseif( $type == 'email' )
+			$result	= $this->Admin_model->getByEmail($key);
+			
+			if($result) {
+				return false;
+			} else {
+				return true;
 			}
-			$user['passcode'] = $passcode;
-			
-			$data['judul']	= "Profile Admin";
-			$data['user']	= $user;
-			
-			$this->libtemplate->main('admin/admin/view', $data);
 		}
 		
+		// verifikasi admin sebelum melakukan perubahan data
 		public function verif() {
 			$data['judul']		= 'Verifikasi';
 			$data['subjudul']	= 'Beritahu kami bahwa ini benar Anda';
@@ -98,7 +124,8 @@
 				if($verify == true) {
 					redirect('admin/master/admin/ubah/'.$_POST['id_user']);
 				} else {
-					$this->session->set_flashdata('pass', $this->input->post('id', true));
+					$this->session->set_flashdata('pass', $this->input->post('id_user', true));
+					// $this->session->set_flashdata('msg', 'Password salah!');
 					redirect('admin/master/admin');
 				}
 			}
@@ -108,6 +135,7 @@
 			$data['admin']	= $this->Admin_model->getById($id_user);
 			$data['judul']	= 'Ubah Password';
 			$data['tipe']	= 'password';
+			$data['back']	= 'admin/master/admin';
 			
 			$this->form_validation->set_rules('password', 'Password', 'min_length[8]|max_length[15]');
 			$this->form_validation->set_rules('passconf', 'Password', 'matches[password]');
@@ -116,9 +144,11 @@
 				$tipe = $this->session->userdata('tipe');
 				$this->libtemplate->main('admin/profile/ganti_password', $data);
 			} else {
-				$tipe = $this->session->userdata('tipe');
-				$this->Admin_model->ubahAdmin();
-				$this->session->set_flashdata('notification', 'Password berhasil diubah!');
+				if( $this->Admin_model->ubahAdmin() == true ) {
+					$this->session->set_flashdata('notification', 'Berhasil diubah!');
+				} else {
+					$this->session->set_flashdata('warning', 'Gagal diubah!');
+				}
 				redirect('admin/master/admin');
 			}
 		}
@@ -135,8 +165,11 @@
 		}
 		
 		public function fix_hapus($id) {
-			$this->Admin_model->hapusAdmin($id);
-			$this->session->set_flashdata('notification', 'Data berhasil dihapus!');
+			if( $this->Admin_model->hapusAdmin($id) == true ) {
+				$this->session->set_flashdata('notification', 'Berhasil dihapus!');
+			} else {
+				$this->session->set_flashdata('warning', 'Gagal dihapus!');
+			}
 			redirect('admin/master/admin');
 		}
 	}

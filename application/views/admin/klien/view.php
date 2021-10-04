@@ -4,7 +4,7 @@
 		<div class="notification" data-val="yes"></div>
 	<?php endif;
 		if($this->session->flashdata('pass')) : ?>
-		<div class="passVerif" data-val="yes" data-tipe="<?=$this->session->flashdata('tipe')?>"></div>
+		<div class="passVerif" data-val="yes" data-tipe="<?=$_SESSION['tipe']?>" data-input="<?=$_SESSION['input']?>"></div>
 	<?php endif; ?>
 	
 	<div class="row mb-3">

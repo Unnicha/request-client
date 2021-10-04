@@ -49,15 +49,17 @@
 		public function tambah() {
 			$data['judul'] = 'Tambah KLU'; 
 			
-			$this->form_validation->set_rules('kode_klu', 'Kode KLU', 'required|is_unique[klu.kode_klu]', array( 'is_unique' => '%s Sudah Ada.' ));
+			$this->form_validation->set_rules('kode_klu', 'Kode KLU', 'required');
 			$this->form_validation->set_rules('bentuk_usaha', 'Bentuk Usaha', 'required');
 			$this->form_validation->set_rules('jenis_usaha', 'Jenis Usaha', 'required');
 			
 			if($this->form_validation->run() == FALSE) {
 				$this->libtemplate->main('admin/klu/tambah', $data);
 			} else {
-				$this->Klu_model->tambahDataKlu();
-				$this->session->set_flashdata('notification', 'Data berhasil ditambahkan!'); 
+				if($this->Klu_model->tambahKlu() == true)
+				$this->session->set_flashdata('notification', 'Berhasil ditambahkan!');
+				else
+				$this->session->set_flashdata('warning', 'Gagal ditambahkan!');
 				redirect('admin/master/klu'); 
 			}
 		}
@@ -73,8 +75,10 @@
 			if($this->form_validation->run() == FALSE) {
 				$this->libtemplate->main('admin/klu/ubah', $data);
 			} else {
-				$this->Klu_model->ubahDataKlu();
-				$this->session->set_flashdata('notification', 'Data berhasil diubah!'); 
+				if($this->Klu_model->ubahKlu() == true)
+				$this->session->set_flashdata('notification', 'Berhasil diubah!'); 
+				else
+				$this->session->set_flashdata('warning', 'Gagal diubah!'); 
 				redirect('admin/master/klu'); 
 			}
 		}
@@ -91,8 +95,10 @@
 		}
 		
 		public function fix_hapus($id) {
-			$this->Klu_model->hapusDataKlu($id);
-			$this->session->set_flashdata('notification', 'Data berhasil dihapus!');
+			if($this->Klu_model->hapusKlu($id) == true)
+			$this->session->set_flashdata('notification', 'Berhasil dihapus!');
+			else
+			$this->session->set_flashdata('warning', 'Gagal dihapus!');
 			redirect('admin/master/klu');
 		}
 	}

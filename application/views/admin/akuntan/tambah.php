@@ -1,3 +1,8 @@
+<?php
+	$emailValid		= $this->session->flashdata('emailValid');
+	$usernameValid	= $this->session->flashdata('usernameValid');
+?>
+
 <div class="content container-fluid">
 	<div class="card card-round card-shadow">
 		<div class="card-body px-4">
@@ -5,7 +10,7 @@
 				<div class="col-lg-8 offset-lg-2">
 					<div class="row mb-4 text-center">
 						<div class="col">
-							<h4><?=$judul?></h4>
+							<h3><?=$judul?></h3>
 						</div>
 					</div>
 					
@@ -23,16 +28,22 @@
 						<!-- Email -->
 						<div class="form-group row">
 							<div class="col-sm">
-								<input type="text" name="email" class="form-control" id="email" placeholder="Email" value="<?= set_value('email') ?>" required>
+								<input type="text" name="email" class="form-control is-<?=$emailValid?>" id="email" placeholder="Email" value="<?= set_value('email') ?>" required>
 								<small class="form-text text-danger"><?= form_error('email', '<p class="mb-0">', '</p>') ?></small>
+								<small class="<?=$emailValid?>-feedback">
+									<?=$this->session->flashdata('emailMsg');?>
+								</small>
 							</div>
 						</div>
 					
 						<!-- Username -->
 						<div class="form-group row">
 							<div class="col-sm">
-								<input type="text" name="username" class="form-control" id="username" placeholder="Username" value="<?= set_value('username') ?>" required>
-								<small class="form-text text-danger"><?= form_error('username', '<p class="mb-0">', '</p>') ?></small>
+								<input type="text" name="username" class="form-control is-<?=$usernameValid?>" id="username" placeholder="Username" value="<?= set_value('username') ?>" required>
+								<small class="form-text text-danger text-username"><?= form_error('username', '<p class="mb-0">', '</p>') ?></small>
+								<small class="<?=$usernameValid?>-feedback">
+									<?=$this->session->flashdata('usernameMsg');?>
+								</small>
 							</div>
 						</div>
 						
@@ -55,7 +66,7 @@
 						<div class="row mt-4 text-right">
 							<div class="col">
 								<button type="submit" name="tambah" class="btn btn-primary">Simpan</button>
-								<a href="javascript:history.go(-1)" class="btn btn-secondary">Batal</a>
+								<a href="<?=base_url()?>admin/master/akuntan" class="btn btn-secondary">Batal</a>
 							</div>
 						</div>
 					</form>

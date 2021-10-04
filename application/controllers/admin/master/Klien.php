@@ -66,8 +66,10 @@
 			if($this->form_validation->run() == FALSE) {
 				$this->libtemplate->main('admin/klien/tambah', $data);
 			} else {
-				$this->Klien_model->tambahKlien();
-				$this->session->set_flashdata('notification', 'Data berhasil ditambahkan!'); 
+				if($this->Klien_model->tambahKlien() == true)
+				$this->session->set_flashdata('notification', 'Berhasil ditambahkan!'); 
+				else
+				$this->session->set_flashdata('warning', 'Gagal ditambahkan!'); 
 				redirect('admin/master/klien'); 
 			}
 		}
@@ -84,7 +86,10 @@
 		}
 		
 		public function cekUnique() {
-			$result = $this->Klien_model->cekUnique($_REQUEST['table'], $_REQUEST['field'], $_REQUEST['value']);
+			$table	= $this->input->post('table');
+			$field	= $this->input->post('field');
+			$value	= $this->input->post('value');
+			$result = ( $this->Klien_model->cekUnique($table, $field, $value) ) ? false : true;
 			echo json_encode($result);
 		}
 		
@@ -133,8 +138,9 @@
 			$data['judul']	= 'Ubah '.ucwords($type);
 			$data['klien']	= $this->Klien_model->getById($id_user);
 			$data['klu']	= $this->Klu_model->getAllKlu(); 
-			$data['status']	= ['Accounting Service', 'Review', 'Semi Review'];
+			
 			$data['table']	= $this->session->userdata('input');
+			$data['status']	= ['Accounting Service', 'Review', 'Semi Review'];
 			$data['tipe']	= $type;
 			
 			if($type == 'nama') {
@@ -165,14 +171,17 @@
 			}
 			
 			if($this->form_validation->run() == FALSE) {
+				$type = $this->session->userdata('tipe');
 				$this->libtemplate->main('klien/profile/ganti_'.$type, $data);
 			} else {
-				if($this->input->post('table') == 'user') {
+				$type	= $this->session->userdata('tipe');
+				$table	= $this->input->post('table');
+				if($table == 'user') {
 					$this->Klien_model->ubahAkun();
-				} elseif($this->input->post('table') == 'profil') {
-					$this->Klien_model->ubahProfile();
+				} elseif($table == 'profil') {
+					$this->Klien_model->ubahProfil();
 				}
-				$this->session->set_flashdata('notification', ucwords($type).' berhasil diubah!');
+				$this->session->set_flashdata('notification', 'Berhasil diubah!');
 				redirect('admin/master/klien/view/'.$this->input->post('id_klien'));
 			}
 		}

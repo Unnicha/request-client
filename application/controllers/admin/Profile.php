@@ -22,6 +22,7 @@
 			$this->libtemplate->main('admin/profile/tampil', $data);
 		}
 		
+		// verifikasi admin sebelum melakukan perubahan data
 		public function verification() {
 			$data['judul']		= 'Verifikasi';
 			$data['subjudul']	= 'Beritahu kami bahwa ini benar Anda';
@@ -50,6 +51,7 @@
 			$type			= $this->session->userdata('tipe');
 			$data['admin']	= $this->Admin_model->getById($id_user);
 			$data['judul']	= 'Ubah '.ucwords($type);
+			$data['back']	= 'admin/profile';
 			
 			if($type == 'nama') {
 				$this->form_validation->set_rules('nama', 'Nama', 'required');
@@ -74,7 +76,7 @@
 				} elseif($tipe == 'username') {
 					$this->session->set_userdata('username', $this->input->post('username', true));
 				}
-				$this->session->set_flashdata('notification', ucwords($tipe).' berhasil diubah!');
+				$this->session->set_flashdata('notification', 'Berhasil diubah!');
 				redirect('admin/profile');
 			}
 		}

@@ -121,7 +121,15 @@
 							<tr>
 								<td><?=$p['pengiriman']?></td>
 								<td><?=$p['tanggal_pengiriman']?></td>
-								<td><?=$p['file']?></td>
+								<td>
+									<?php if( $detail['format_data'] == 'Softcopy' ) : ?>
+										<a href="<?=base_url('klien/permintaan_data_akuntansi/download?y='.$detail['tahun'].'&f='.$p['file'])?>" target="">
+											<?=$p['file']?>
+										</a>
+									<?php else : ?>
+										<?=$p['file']?>
+									<?php endif ?>
+								</td>
 								<td><?=$p['ket_pengiriman']?></td>
 							</tr>
 								<?php endforeach; else : ?>

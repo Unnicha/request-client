@@ -3,7 +3,7 @@
 		<div class="notification" data-val="yes"></div>
 	<?php endif; ?>
 	
-	<div class="row mb-3">
+	<div class="row content-header">
 		<div class="col">
 			<h3><?= $judul ?></h3>
 		</div>
@@ -86,9 +86,9 @@
 				<div class="col">
 					<h5>History Pengiriman</h5>
 				</div>
-				<div class="col-auto">
+				<!-- <div class="col-auto">
 					<?= $detail['button'] ?>
-				</div>
+				</div> -->
 			</div>
 			
 			<table class="table table-striped table-responsive-sm">
@@ -108,9 +108,12 @@
 						<td><?=$p['pengiriman']?></td>
 						<td><?=$p['tanggal_pengiriman']?></td>
 						<td>
-							<?php if($detail['format_data'] == 'Softcopy') : ?>
-								<a href="<?=base_url($link.$p['file'])?>"><?=$p['file']?></a>
-							<?php else : echo $p['file'] ?>
+							<?php if( $detail['format_data'] == 'Softcopy' ) : ?>
+								<a href="<?=base_url('admin/pengiriman/pengiriman_data_akuntansi/download?k='.$detail['id_klien'].'&y='.$detail['tahun'].'&f='.$p['file'])?>" target="">
+									<?=$p['file']?>
+								</a>
+							<?php else : ?>
+								<?=$p['file']?>
 							<?php endif ?>
 						</td>
 						<td class="text-left"><?=$p['ket_pengiriman']?></td>

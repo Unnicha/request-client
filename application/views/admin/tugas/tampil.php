@@ -61,6 +61,9 @@
 			'ordering'		: false,
 			'lengthChange'	: false,
 			'pageLength'	: 8,
+			'language'		: {
+				emptyTable	: "Tidak ada data."
+			},
 			'ajax'			: {
 				'url'	: '<?=base_url()?>admin/master/tugas/page',
 				'type'	: 'post',

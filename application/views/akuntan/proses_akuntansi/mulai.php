@@ -4,10 +4,9 @@
 			<div class="col">
 				<h4><?= $judul ?></h4>
 			</div>
-				
-			<div class="col-auto">
+			<!-- <div class="col-auto">
 				<a href="<?=base_url()?>akuntan/proses_data_akuntansi" class="btn btn-secondary">Kembali</a>
-			</div>
+			</div> -->
 		</div>
 	</div>
 	
@@ -57,7 +56,7 @@
 		</div>
 		
 		<div class="col-lg">
-			<div class="card card-round card-shadow mt-4 mt-lg-0">
+			<div class="card card-round shadow mt-4 mt-lg-0">
 				<div class="card-body px-4">
 					<h5 class="card-title mb-3">Proses Data</h5>
 					

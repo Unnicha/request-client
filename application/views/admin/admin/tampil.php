@@ -80,6 +80,9 @@
 			'ordering'		: false,
 			'lengthChange'	: false,
 			'pageLength'	: 8,
+			'language'		: {
+				emptyTable	: "Tidak ada data."
+			},
 			'ajax'			: {
 				'url'	: '<?=base_url()?>admin/master/admin/page',
 				'type'	: 'post',
@@ -101,6 +104,7 @@
 				success	: function(data) {
 					$(".modalVerif").modal('show');
 					$(".showVerif").html(data);
+					// $('.salah').html('<?=$this->session->flashdata('msg')?>');
 				}
 			})
 		}
@@ -109,10 +113,9 @@
 		$('#myTable tbody').on('click', 'a.btn-ubah', function() {
 			verif( $(this).data('id') );
 		});
-		
+		// jika verifikasi gagal
 		if($('.passVerif').data('val') == 'yes') {
-			verif($('.passVerif').data('id'));
-			$('.salah').html('Password salah!');
+			verif( $('.passVerif').data('id') );
 		}
 		
 		$('#myTable').on('click', '.btn-hapus', function() {

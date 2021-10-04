@@ -14,13 +14,12 @@
 		}
 		
 		public function page() {
-			$cari	= $_POST['search']['value'];
-			$limit	= $_POST['length'];
-			$offset = $_POST['start'];
-			
+			$limit		= $_POST['length'];
+			$offset		= $_POST['start'];
+			$cari		= $_POST['search']['value'];
 			$countData	= $this->Akuntan_model->countAkuntan($cari); 
 			$akuntan	= $this->Akuntan_model->getAllAkuntan($offset, $limit, $cari);
-
+			
 			$data		= [];
 			foreach($akuntan as $k) {
 				$row	= [];
@@ -39,6 +38,7 @@
 
 				$data[] = $row;
 			}
+			
 			$callback	= [
 				'draw'				=> $_POST['draw'], // Ini dari datatablenya
 				'recordsTotal'		=> $countData,
@@ -47,23 +47,55 @@
 			];
 			echo json_encode($callback);
 		}
-
+		
 		public function tambah() {
 			$data['judul'] = 'Tambah Akuntan'; 
 			$data['level'] = "akuntan";
-
+			
 			$this->form_validation->set_rules('nama', 'Nama', 'required');
-			$this->form_validation->set_rules('email', 'Email', 'required|valid_email|is_unique[user.email_user]');
-			$this->form_validation->set_rules('username', 'Username', 'required|is_unique[user.username]|min_length[8]|max_length[15]');
+			$this->form_validation->set_rules('email', 'Email', 'required|valid_email');
+			$this->form_validation->set_rules('username', 'Username', 'required|min_length[8]|max_length[20]');
 			$this->form_validation->set_rules('password', 'Password', 'required|min_length[8]');
 			$this->form_validation->set_rules('passconf', 'Password', 'required|matches[password]');
 			
 			if($this->form_validation->run() == FALSE) {
 				$this->libtemplate->main('admin/akuntan/tambah', $data);
 			} else {
-				$this->Akuntan_model->tambahAkuntan();
-				$this->session->set_flashdata('notification', 'Data berhasil ditambahkan!'); 
-				redirect('admin/master/akuntan');  
+				$validation = true;
+				if( $this->cekUnique('email', $_POST['email']) == false ) {
+					$validation = false;
+					$this->session->set_flashdata('emailValid', 'invalid');
+					$this->session->set_flashdata('emailMsg', 'Email sudah digunakan!');
+				}
+				if( $this->cekUnique('username', $_POST['username']) == false ) {
+					$validation = false;
+					$this->session->set_flashdata('usernameValid', 'invalid');
+					$this->session->set_flashdata('usernameMsg', 'Username sudah digunakan!');
+				}
+				
+				if( $validation == true ) {
+					if($this->Akuntan_model->tambahAkuntan() == true)
+					$this->session->set_flashdata('notification', 'Berhasil ditambahkan!');
+					else
+					$this->session->set_flashdata('warning', 'Gagal ditambahkan!');
+					redirect('admin/master/akuntan');
+				} else {
+					$this->libtemplate->main('admin/akuntan/tambah', $data);
+				}
+			}
+		}
+		
+		// untuk validasi data baru
+		public function cekUnique($type, $key) {
+			if( $type == 'username' )
+			$result	= $this->Akuntan_model->getBy('byUsername', $key);
+			elseif( $type == 'email' )
+			$result	= $this->Akuntan_model->getBy('byEmail', $key);
+			
+			if($result) {
+				return false;
+			} else {
+				return true;
 			}
 		}
 		
@@ -77,20 +109,20 @@
 			if($this->form_validation->run() == FALSE) {
 				$this->load->view('admin/akuntan/verif', $data);
 			} else {
-				$cek	= $this->Akuntan_model->getById($this->session->userdata('id_user'));
+				$cek	= $this->Akuntan_model->getBy('byId', $this->session->userdata('id_user'));
 				$verify	= password_verify($this->input->post('password', true), $cek['password']);
 				
 				if($verify == true) {
 					redirect('admin/master/akuntan/ubah/'.$_POST['id_user']);
 				} else {
-					$this->session->set_flashdata('pass', $this->input->post('id', true));
+					$this->session->set_flashdata('pass', $this->input->post('id_user', true));
 					redirect('admin/master/akuntan');
 				}
 			}
 		}
 		
 		public function ubah($id_user) {
-			$data['akuntan']	= $this->Akuntan_model->getById($id_user);
+			$data['akuntan']	= $this->Akuntan_model->getBy('byId', $id_user);
 			$data['judul']		= 'Ubah Password';
 			
 			$this->form_validation->set_rules('password', 'Password', 'min_length[8]|max_length[15]');
@@ -99,8 +131,10 @@
 			if($this->form_validation->run() == FALSE) {
 				$this->libtemplate->main('admin/akuntan/ganti_password', $data);
 			} else {
-				$this->Akuntan_model->ubahAkuntan();
-				$this->session->set_flashdata('notification', 'Password berhasil diubah!');
+				if( $this->Akuntan_model->ubahAkuntan() == true )
+				$this->session->set_flashdata('notification', 'Berhasil diubah!');
+				else
+				$this->session->set_flashdata('warning', 'Gagal diubah!');
 				redirect('admin/master/akuntan');
 			}
 		}
@@ -118,9 +152,11 @@
 		}
 		
 		public function fix_hapus($id) {
-			$this->Akuntan_model->hapusAkuntan($id);
-			$this->session->set_flashdata('notification', 'Data akuntan berhasil dihapus!');
-			redirect('admin/master/akuntan'); 
+			if( $this->Akuntan_model->hapusAkuntan($id) == true )
+			$this->session->set_flashdata('notification', 'Berhasil dihapus!');
+			else
+			$this->session->set_flashdata('warning', 'Gagal dihapus!');
+			redirect('admin/master/akuntan');
 		}
 	}
 ?>

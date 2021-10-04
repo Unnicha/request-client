@@ -111,7 +111,7 @@
 							</div>
 						</div>
 						
-						<div class="row mt-4 text-right">
+						<div class="row mt-4">
 							<div class="col">
 								<button type="submit" name="tambah" class="btn btn-primary">Simpan</button>
 								<a href="javascript:history.go(-1)" class="btn btn-secondary">Batal</a>

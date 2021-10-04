@@ -6,7 +6,7 @@
 		<div class="warning" data-val="yes"></div>
 	<?php endif; ?>
 	
-	<h3 class="mb-3"><?= $judul ?></h3>
+	<h3 class="mb-3" id="contentTitle"><?= $judul ?></h3>
 	
 	<div class="card card-shadow">
 		<div class="card-header">
@@ -107,16 +107,37 @@
 		}
 		klien();
 		
+		// $.fn.dataTable.ext.buttons.reload = {
+		// 	text: 'Coba',
+		// 	action: function ( e, dt, node, config ) {
+		// 		var data = dt.ajax.params();
+		// 		// alert( 'Search term was: '+data.search.value );
+		// 		$.ajax({
+		// 			type	: 'POST',
+		// 			url		: '<?= base_url(); ?>akuntan/pengiriman_data_akuntansi/export',
+		// 			data	: {
+		// 				'bulan': data.bulan,
+		// 				'tahun': data.tahun,
+		// 				'klien': data.klien,
+		// 			},
+		// 			success	: function(e) {
+		// 				var result = JSON.parse(e)
+		// 				alert('Result : '+result);
+		// 			}
+		// 		})
+		// 	}
+		// };
+		
 		var table = $('#myTable').DataTable({
 			'processing'	: true,
 			'serverSide'	: true,
 			'ordering'		: false,
 			'lengthChange'	: false,
 			'searching'		: false,
+			'pageLength'	: 1,
 			'language'		: {
 				emptyTable	: "Belum ada pengiriman"
 			},
-			//'pageLength': 9,
 			'ajax'		: {
 				'url'	: '<?=base_url()?>akuntan/pengiriman_data_akuntansi/page',
 				'type'	: 'post',
@@ -135,7 +156,85 @@
 					'visible'	: false,
 				},
 			],
+			// 'dom'			: 'Bfrtip',
+			// 'buttons'		: [
+			// 	{
+			// 		extend: 'excel',
+			// 		text: 'Export Excel',
+			// 		title: function() { return $('#contentTitle').html() },
+			// 		filename: function() { return $('#contentTitle').html() },
+			// 	},
+			// 	{
+			// 		extend: 'pdf',
+			// 		text: 'Export PDF',
+			// 		orientation: 'landscape',
+			// 		title: function() { return $('#contentTitle').html() },
+			// 		filename: function() { return $('#contentTitle').html() },
+			// 		customize: function (doc) {
+			// 			var now = new Date();
+			// 			var jsDate = now.getDate()+'-'+(now.getMonth()+1)+'-'+now.getFullYear()+' '+now.getHours()+':'+now.getMinutes()+':'+now.getSeconds();
+			// 			// doc.defaultStyle.fontSize = 7;
+			// 			doc['footer']=(function(page, pages) {
+			// 				return {
+			// 					columns: [
+			// 						{
+			// 							alignment: 'left',
+			// 							text: ['Created on: ', { text: jsDate.toString() }]
+			// 						},
+			// 						{
+			// 							alignment: 'right',
+			// 							text: ['page ', { text: page.toString() },	' of ',	{ text: pages.toString() }]
+			// 						}
+			// 					],
+			// 					margin: 20
+			// 				}
+			// 			});
+			// 		},
+			// 		exportOptions : {
+			// 			modifier : {
+			// 				page : 'all',
+			// 			}
+			// 		}
+			// 	},
+			// 	{
+			// 		extend: 'print',
+			// 		exportOptions : {
+			// 			modifier : {
+			// 				page : 'all',
+			// 			}
+			// 		}
+			// 	},
+			// ],
 		});
+		
+		// new $.fn.dataTable.Buttons( table, {
+		// 	buttons: [
+		// 		{
+		// 			extends : 'reload',
+		// 			text: 'Create CSV',
+		// 			action: function ( e, dt, node, config ) {
+		// 				// Do custom processing
+		// 				var data = dt.ajax.params();
+						
+		// 				$.ajax({
+		// 					type	: 'POST',
+		// 					url		: '<?= base_url(); ?>akuntan/pengiriman_data_akuntansi/export',
+		// 					data	: {
+		// 						'bulan': data.bulan,
+		// 						'tahun': data.tahun,
+		// 						'klien': data.klien,
+		// 					},
+		// 					success	: function(e) {
+		// 						var result = JSON.parse(e)
+		// 						alert('Result : '+result);
+		// 					}
+		// 				})
+		// 				// Call the default csvHtml5 action method to create the CSV file
+		// 				$.fn.dataTable.ext.buttons.csvHtml5.action.call(this, e, dt, node, config);
+		// 			}
+		// 		}
+		// 	]
+		// } );
 		
 		$("#bulan").change(function() {
 			klien();

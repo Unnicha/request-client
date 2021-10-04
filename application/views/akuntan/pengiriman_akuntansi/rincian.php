@@ -3,7 +3,7 @@
 		<div class="notification" data-val="yes"></div>
 	<?php endif; ?>
 	
-	<div class="row mb-3">
+	<div class="row content-header">
 		<div class="col">
 			<h3><?= $judul ?></h3>
 		</div>
@@ -12,34 +12,71 @@
 		</div>
 	</div>
 	
-	<div class="card card-shadow">
-		<div class="card-body">
-			<div class="row">
-				<div class="col">
-					<h5>Detail Permintaan</h5>
+	<div class="row">
+		<div class="col">
+			<div class="card-deck">
+				<div class="card card-shadow">
+					<div class="card-body">
+						<div class="row mb-2">
+							<div class="col">
+								<h5>Detail Permintaan</h5>
+							</div>
+						</div>
+						
+						<table class="table table-detail mb-0">
+							<tbody>
+								<tr>
+									<td>Nama Klien</td>
+									<td><?=$detail['nama_klien']?></td>
+								</tr>
+								<tr>
+									<td>Permintaan ke</td>
+									<td><?=$detail['request']?></td>
+								</tr>
+								<tr>
+									<td>Tanggal Permintaan</td>
+									<td><?=$detail['tanggal_permintaan']?></td>
+								</tr>
+								<tr>
+									<td>Requestor</td>
+									<td><?= $detail['nama'] ?></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				
+				<div class="card card-shadow">
+					<div class="card-body">
+						<div class="row mb-2">
+							<div class="col">
+								<h5>Detail Data</h5>
+							</div>
+						</div>
+						
+						<table class="table table-detail mb-0">
+							<tbody>
+								<tr>
+									<td>Jenis Data</td>
+									<td><?=$detail['jenis_data']?></td>
+								</tr>
+								<tr>
+									<td>Detail</td>
+									<td><?=$detail['detail']?></td>
+								</tr>
+								<tr>
+									<td>Format Data</td>
+									<td><?=$detail['format_data']?></td>
+								</tr>
+								<tr>
+									<td>Status</td>
+									<td><?= $detail['badge'] ?></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
 				</div>
 			</div>
-			
-			<table class="table table-detail mb-0">
-				<tbody>
-					<tr>
-						<td scope="row" width="35%">Jenis Data</td>
-						<td><?=$detail['jenis_data']?></td>
-					</tr>
-					<tr>
-						<td scope="row">Detail</td>
-						<td><?=$detail['detail']?></td>
-					</tr>
-					<tr>
-						<td scope="row">Format Data</td>
-						<td><?=$detail['format_data']?></td>
-					</tr>
-					<tr>
-						<td scope="row">Status</td>
-						<td><?= $detail['badge'] ?></td>
-					</tr>
-				</tbody>
-			</table>
 		</div>
 	</div>
 	
@@ -73,9 +110,12 @@
 						<td><?=$p['pengiriman']?></td>
 						<td><?=$p['tanggal_pengiriman']?></td>
 						<td>
-							<?php if($detail['format_data'] == 'Softcopy') : ?>
-								<a href="<?=$link.$p['file']?>"><?=$p['file']?></a>
-							<?php else : echo $p['file'] ?>
+							<?php if( $detail['format_data'] == 'Softcopy' ) : ?>
+								<a href="<?=base_url('akuntan/pengiriman_data_akuntansi/download?k='.$detail['id_klien'].'&y='.$detail['tahun'].'&f='.$p['file'])?>" target="">
+									<?=$p['file']?>
+								</a>
+							<?php else : ?>
+								<?=$p['file']?>
 							<?php endif ?>
 						</td>
 						<td><?=$p['ket_pengiriman']?></td>

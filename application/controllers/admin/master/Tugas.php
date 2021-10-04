@@ -49,10 +49,10 @@
 			];
 			echo json_encode($callback);
 		}
-
+		
 		public function tambah() {
 			$data['judul']		= 'Tambah Tugas'; 
-			$data['jenis_data']	= $this->Jenis_data_model->getAllJenisData();
+			$data['jenis_data']	= $this->Jenis_data_model->getAllJenis();
 			
 			$this->form_validation->set_rules('nama_tugas', 'Nama Tugas', 'required');
 			$this->form_validation->set_rules('kode_jenis', 'Kode Jenis', 'required');
@@ -61,8 +61,10 @@
 			if($this->form_validation->run() == FALSE) {
 				$this->libtemplate->main('admin/tugas/tambah', $data);
 			} else {
-				$this->Tugas_model->tambahTugas();
-				$this->session->set_flashdata('notification', 'Data berhasil ditambahkan!'); 
+				if( $this->Tugas_model->tambahTugas() == true )
+				$this->session->set_flashdata('notification', 'Berhasil ditambahkan!');
+				else
+				$this->session->set_flashdata('warning', 'Gagal ditambahkan!');
 				redirect('admin/master/tugas'); 
 			}
 		}
@@ -85,12 +87,14 @@
 			if($this->form_validation->run() == FALSE) {
 				$this->libtemplate->main('admin/tugas/ubah', $data);
 			} else {
-				$this->Tugas_model->ubahTugas();
-				$this->session->set_flashdata('notification', 'Data berhasil diubah!'); 
+				if($this->Tugas_model->ubahTugas() == true)
+				$this->session->set_flashdata('notification', 'Berhasil diubah!'); 
+				else
+				$this->session->set_flashdata('warning', 'Gagal diubah!'); 
 				redirect('admin/master/tugas'); 
 			}
 		}
-
+		
 		public function detail($kode_tugas) {
 			$data['judul'] = 'Detail Tugas';
 			$data['tugas'] = $this->Tugas_model->getById($kode_tugas);
@@ -110,8 +114,10 @@
 		}
 		
 		public function fix_hapus($id) {
-			$this->Admin_model->hapusTugas($id);
-			$this->session->set_flashdata('notification', 'Tugas berhasil dihapus!');
+			if($this->Tugas_model->hapusTugas($id) == true)
+			$this->session->set_flashdata('notification', 'Berhasil dihapus!');
+			else
+			$this->session->set_flashdata('warning', 'Gagal dihapus!');
 			redirect('admin/master/tugas');
 		}
 	}

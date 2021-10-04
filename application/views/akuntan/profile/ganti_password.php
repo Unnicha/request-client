@@ -1,10 +1,10 @@
 <div class="content container-fluid">
-	<div class="card card-round card-shadow">
-		<div class="card-body p-5">
-			<div class="row">
-				<div class="col-lg-8 offset-lg-2">
-					<h3 class="mb-3 text-center"><?=$judul?></h3>
-					
+	<h3 class="content-header"><?=$judul?></h3>
+	
+	<div class="row">
+		<div class="col-lg-8">
+			<div class="card card-round card-shadow">
+				<div class="card-body" style="padding: 2rem">
 					<form action="" method="post">
 						<input type="hidden" name="id_user" id="id_user" value="<?= $akuntan['id_user'] ?>">
 						<input type="hidden" name="tipe" id="tipe" value="password">

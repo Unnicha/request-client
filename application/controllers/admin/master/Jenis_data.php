@@ -18,8 +18,8 @@
 			$limit	= $_POST['length'];
 			$offset = $_POST['start'];
 			
-			$countData	= $this->Jenis_data_model->countJenisData($cari); 
-			$jenis_data	= $this->Jenis_data_model->getAllJenisData($offset, $limit, $cari);
+			$countData	= $this->Jenis_data_model->countJenis($cari); 
+			$jenis_data	= $this->Jenis_data_model->getAllJenis($offset, $limit, $cari);
 			
 			$data = [];
 			foreach($jenis_data as $k) {
@@ -57,9 +57,12 @@
 			if($this->form_validation->run() == FALSE) {
 				$this->libtemplate->main('admin/jenis_data/tambah', $data);
 			} else {
-				$this->Jenis_data_model->tambahJenisData();
-				$this->session->set_flashdata('notification', 'Data berhasil ditambahkan!'); 
-				redirect('admin/master/jenis_data'); 
+				if( $this->Admin_model->tambahJenis() == true ) {
+					$this->session->set_flashdata('notification', 'Berhasil ditambahkan!');
+				} else {
+					$this->session->set_flashdata('warning', 'Gagal ditambahkan!');
+				}
+				redirect('admin/master/jenis_data');
 			}
 		}
 		
@@ -74,8 +77,11 @@
 			if($this->form_validation->run() == FALSE) {
 				$this->libtemplate->main('admin/jenis_data/ubah', $data);
 			} else {
-				$this->Jenis_data_model->ubahJenisData();
-				$this->session->set_flashdata('notification', 'Data berhasil diubah!'); 
+				if( $this->Admin_model->ubahJenis() == true ) {
+					$this->session->set_flashdata('notification', 'Berhasil diubah!');
+				} else {
+					$this->session->set_flashdata('warning', 'Gagal diubah!');
+				}
 				redirect('admin/master/jenis_data'); 
 			}
 		}
@@ -99,8 +105,11 @@
 		}
 		
 		public function fix_hapus($id) {
-			$this->Jenis_data_model->hapusJenisData($id);
-			$this->session->set_flashdata('notification', 'Data berhasil dihapus!');
+			if( $this->Admin_model->hapusJenis($id) == true ) {
+				$this->session->set_flashdata('notification', 'Berhasil dihapus!');
+			} else {
+				$this->session->set_flashdata('warning', 'Gagal dihapus!');
+			}
 			redirect('admin/master/jenis_data'); 
 		}
 	}

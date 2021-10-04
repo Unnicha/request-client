@@ -1,15 +1,16 @@
-<?php
+<?php defined('BASEPATH') OR exit('No direct script access allowed');
 
 	class Home extends CI_Controller { 
 		
 		public function __construct() {
 			parent::__construct();
+			$this->load->model('Akuntan_model');
 		}
 		
 		public function index() {
-			$username	= $this->session->userdata('username');
+			$id_user	= $this->session->userdata('id_user');
 			$nama_user	= $this->session->userdata('nama');
-			$user		= $this->db->get_where('user', ['username'=>$username])->row_array();
+			$user		= $this->Akuntan_model->getBy('byId', $id_user);
 			if ($user == null) {
 				redirect('login');
 			}

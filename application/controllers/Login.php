@@ -12,24 +12,25 @@
 		public function index() {
 			if ($this->input->post() == NULL) {
 				$this->load->view('login');
-			} 
-			else {
-				$cek	= $this->Admin_model->getByUsername($this->input->post('username', true));
-				$verify	= password_verify($this->input->post('password', true), $cek['password']);
+			} else {
+				$username	= $this->input->post('username', true);
+				$password	= $this->input->post('password', true);
+				$cek		= $this->Admin_model->getByUsername($username);
+				$verify		= password_verify($password, $cek['password']);
 				
 				if($cek == null || $verify == false) {
 					$this->session->set_flashdata('flash', 'tidak sesuai');
 					redirect('login');
 				} else {
-					echo "no false";
 					$sess = [
-						'id_user' => $cek['id_user'],
-						'username' => $this->input->post('username', true),
-						'nama' => $cek['nama'],
-						'level' => $cek['level'],
+						'id_user'	=> $cek['id_user'],
+						'username'	=> $username,
+						'nama'		=> $cek['nama'],
+						'level'		=> $cek['level'],
 					];
-					$this->session->set_userdata($sess); // set ke session
-					$this->Admin_model->ubahPassword($this->input->post('password', true), $cek['id_user']); // update hashing password
+					$this->session->set_userdata($sess);
+					// update hashing password
+					$this->Admin_model->ubahPassword($password, $cek['id_user']);
 					
 					switch ($cek['level']) { // redirect ke home berdasarkan level user
 						case "admin"	: redirect('admin/home'); break;

@@ -9,7 +9,7 @@
 		}
 		
 		public function index() {
-			$akuntan	= $this->Akuntan_model->getById($this->session->userdata('id_user'));
+			$akuntan	= $this->Akuntan_model->getBy('byId', $this->session->userdata('id_user'));
 			$passcode	= '';
 			for($i=0; $i<$akuntan['passlength']; $i++) {
 				$passcode .= '&bull;';
@@ -34,7 +34,7 @@
 			if($this->form_validation->run() == FALSE) {
 				$this->load->view('akuntan/profile/verif', $data);
 			} else {
-				$cek	= $this->Akuntan_model->getById($this->session->userdata('id_user'));
+				$cek	= $this->Akuntan_model->getBy('byId', $this->session->userdata('id_user'));
 				$verify	= password_verify($this->input->post('password', true), $cek['password']);
 				
 				if($verify == true) {
@@ -48,7 +48,7 @@
 		
 		public function ubah($id_user) {
 			$type				= $this->session->userdata('tipe');
-			$data['akuntan']	= $this->Akuntan_model->getById($id_user);
+			$data['akuntan']	= $this->Akuntan_model->getBy('byId', $id_user);
 			$data['judul']		= 'Ubah '.ucwords($type);
 			
 			if($type == 'nama') {

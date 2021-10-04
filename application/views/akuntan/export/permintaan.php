@@ -92,19 +92,6 @@
 				<tbody class="text-center">
 				</tbody>
 			</table>
-			
-			<!-- <div class="row mt-4">
-				<div class="col">
-					<button type="submit" name="export" value="xls" class="btn btn-excel">
-						<i class="bi bi-file-earmark-spreadsheet"></i>
-						Export Excel
-					</button>
-					<button type="submit" name="export" value="pdf" class="btn btn-pdf">
-						<i class="bi bi-file-earmark-pdf"></i>
-						Export PDF
-					</button>
-				</div>
-			</div> -->
 		</div>
 	</div>
 </div>
@@ -170,10 +157,11 @@
 			'processing'	: true,
 			'serverSide'	: true,
 			'responsive'	: true,
-			'paging'		: false,
+			// 'paging'		: false,
 			'ordering'		: false,
 			'searching'		: false,
 			'lengthChange'	: false,
+			// 'pageLength'	: 2,
 			'dom'			: 'Bfrtip',
 			'buttons'		: [
 				{
@@ -207,7 +195,12 @@
 								margin: 20
 							}
 						});
-					}
+					},
+					// exportOptions : {
+					// 	modifier : {
+					// 		page : 'all',
+					// 	}
+					// }
 				},
 				{
 					extend: 'print',

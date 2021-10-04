@@ -206,8 +206,8 @@ div.dataTables_wrapper div.dataTables_paginate {
 .sidebar-heading {
 	display: block;
 	position: relative;
-	color: darkblue;
-	font-weight: 500;
+	color: #bebec3;
+	font-weight: 700;
 	padding: .75rem 1.5rem;
 	cursor: default;
 	/* border-bottom: 1px solid #dee2e6; */
@@ -224,7 +224,7 @@ div.dataTables_wrapper div.dataTables_paginate {
 	border-left: 3px solid transparent;
 }
 .sidebar-subheading.active, .sidebar-subheading2.active {
-	color: #333!important;
+	color: #6c757d!important;
 	background-color: #dee2e6;
 }
 .sidebar-subheading2 {
@@ -240,7 +240,7 @@ div.dataTables_wrapper div.dataTables_paginate {
 	border-left: 3px solid #dee2e6;
 }
 .sidebar-subheading2.active:hover {
-	color: inherit!important;
+	color: #6c757d!important;
 }
 .step {
 	height: 15px;

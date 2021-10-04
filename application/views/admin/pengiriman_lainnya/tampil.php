@@ -1,13 +1,9 @@
 <div class="content container-fluid">
-	<div class="row mb-2">
-		<div class="col">
-			<h3><?= $judul ?></h3>
-		</div>
-	</div>
+	<h3 class="mb-3"><?= $judul ?></h3>
 	
 	<div class="card card-shadow">
 		<div class="card-body p-0">
-			<form action="<?=base_url()?>admin/pengiriman/pengiriman_data_lainnya/cetak" method="post" target="_blank">
+			<form action="" method="post">
 				<div class="row form-inline px-4 pt-3">
 					<div class="col-sm">
 						<!-- Ganti Bulan -->
@@ -43,21 +39,6 @@
 							<option value="<?=$k['id_klien']?>" <?=$pilih?>> <?=$k['nama_klien']?> </option>
 								<?php endforeach ?>
 						</select> 
-					</div>
-						
-					<div class="col-auto">
-						<div class="row float-right">
-							<div class="col">
-								<button type="submit" name="xls" class="btn btn-success mr-1">
-									<i class="bi bi-download"></i>
-									Excel
-								</button>
-								<button type="submit" name="pdf" class="btn btn-danger">
-									<i class="bi bi-download"></i>
-									PDF
-								</button>
-							</div>
-						</div>
 					</div>
 				</div>
 			</form>

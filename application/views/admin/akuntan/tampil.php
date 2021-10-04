@@ -72,6 +72,9 @@
 			'ordering'		: false,
 			'lengthChange'	: false,
 			'pageLength'	: 8,
+			'language'		: {
+				emptyTable	: "Tidak ada data."
+			},
 			'ajax'			: {
 				'url'	: '<?=base_url()?>admin/master/akuntan/page',
 				'type'	: 'post',
@@ -100,10 +103,9 @@
 		$('#myTable tbody').on('click', 'a.btn-ubah', function() {
 			verif( $(this).data('id') );
 		});
-		
+		// jika verifikasi gagal
 		if($('.passVerif').data('val') == 'yes') {
 			verif($('.passVerif').data('id'));
-			$('.salah').html('Password salah!');
 		}
 		
 		// Hapus

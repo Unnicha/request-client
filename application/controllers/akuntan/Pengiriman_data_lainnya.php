@@ -5,10 +5,9 @@
 		public function __construct() {
 			parent::__construct();
 			$this->load->library('form_validation');
-			$this->load->library('exportpengiriman');
 			
-			$this->load->model('M_Permintaan_lainnya');
-			$this->load->model('M_Pengiriman_lainnya');
+			$this->load->model('M_Permintaan_lainnya', 'M_Permintaan');
+			$this->load->model('M_Pengiriman_lainnya', 'M_Pengiriman');
 			$this->load->model('Klien_model');
 			$this->load->model('Akses_model');
 			$this->load->model('Jenis_data_model');
@@ -41,12 +40,12 @@
 			
 			$limit		= $_POST['length'];
 			$offset		= $_POST['start'];
-			$countData	= $this->M_Pengiriman_lainnya->countPengiriman($bulan, $tahun, $klien); 
-			$pengiriman	= $this->M_Pengiriman_lainnya->getByMasa($bulan, $tahun, $klien, $offset, $limit);
+			$countData	= $this->M_Pengiriman->countPengiriman($bulan, $tahun, $klien); 
+			$pengiriman	= $this->M_Pengiriman->getByMasa($bulan, $tahun, $klien, $offset, $limit);
 			
 			$data = [];
 			foreach($pengiriman as $val) {
-				$detail	= $this->M_Permintaan_lainnya->countDetail($val['id_permintaan']);
+				$detail	= $this->M_Permintaan->countDetail($val['id_permintaan']);
 				$badge	= '';
 				if($detail['jumYes'] > 0)
 					$badge .= '<span class="badge badge-success mr-1" data-toggle="tooltip" data-placement="bottom" title="Lengkap">'.$detail['jumYes'].'</span>';
@@ -101,8 +100,8 @@
 		
 		public function detail() {
 			$id_permintaan	= $_REQUEST['id'];
-			$permintaan		= $this->M_Permintaan_lainnya->getById($id_permintaan);
-			$isi			= $this->M_Permintaan_lainnya->getDetail($id_permintaan);
+			$permintaan		= $this->M_Permintaan->getById($id_permintaan);
+			$isi			= $this->M_Permintaan->getDetail($id_permintaan);
 			
 			// tampilan bagde masing2 data(isi) berdasarkan status pengiriman
 			foreach($isi as $i => $val) {
@@ -127,8 +126,8 @@
 		}
 		
 		public function detail_pengiriman($id_data) {
-			$detail		= $this->M_Pengiriman_lainnya->getById($id_data);
-			$pengiriman	= $this->M_Pengiriman_lainnya->getDetail($id_data);
+			$detail		= $this->M_Pengiriman->getById($id_data);
+			$pengiriman	= $this->M_Pengiriman->getDetail($id_data);
 			
 			// tampilan bagde berdasarkan status pengiriman
 			if($detail['status_kirim'] == 'yes') {
@@ -158,6 +157,37 @@
 			$this->libtemplate->main('akuntan/pengiriman_lainnya/rincian', $data);
 		}
 		
+		public function download() {
+			$klien		= $_GET['k'];
+			$year		= $_GET['y'];
+			$fileName	= str_replace('%20', ' ', $_GET['f']);
+			$fileDir	= 'asset/download/';
+			$existance	= false;
+			
+			$this->M_Pengiriman->download($klien, $year, $fileName);
+			if( is_dir($fileDir) ) {
+				$handle = opendir($fileDir);
+				while( ($fileExist = readdir($handle) !== false	)){ // Looping isi file pada directory
+					if($fileExist == $fileName)
+						$existance = true;
+				}
+			}
+			
+			if( $existance == true ){ // file does not exist
+				$ext = pathinfo($fileName, PATHINFO_EXTENSION);
+				header("Cache-Control: public");
+				header("Content-Description: File Transfer");
+				header("Content-Disposition: attachment; filename=$fileName");
+				header("Content-Type: application/".$ext);
+				header("Content-Transfer-Encoding: binary");
+				// read the file from disk
+				readfile($fileName);
+				unlink('asset/download/'.$fileName);
+			} else {
+				die('file not found');
+			}
+		}
+		
 		public function konfirmasi() {
 			$id		= $_POST['id'];
 			$status	= $_POST['status'];
@@ -175,7 +205,7 @@
 		}
 		
 		public function fix() {
-			$this->M_Pengiriman_lainnya->konfirmasi($_POST['id'], $_POST['stat']);
+			$this->M_Pengiriman->konfirmasi($_POST['id'], $_POST['stat']);
 			$msg = $_POST['stat'] == 'yes' ? 'Data berhasil dikonfirmasi!' : 'Konfirmasi berhasil dibatalkan!';
 			$this->session->set_flashdata('notification', $msg);
 		}
